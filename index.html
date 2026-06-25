@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You — A Year, Kept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,400..600&family=Newsreader:ital,wght@0,300..500;1,400&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================= TOKENS ============================= */
+:root{
+  --cream: #F2E9DC;
+  --paper: #E9DCC2;
+  --paper-dark: #DCCBA8;
+  --rust: #B14B2C;
+  --rust-deep: #8B4226;
+  --ink: #3A2E26;
+  --ink-soft: #5C4A3B;
+  --night-deep: #0D0B1A;
+  --night-mid: #1B1A2E;
+  --night-glow: #3D3866;
+  --gold: #D9A24B;
+  --shadow-soft: 0 10px 30px -8px rgba(58,46,38,0.28), 0 2px 6px -2px rgba(58,46,38,0.18);
+  --shadow-deep: 0 24px 60px -12px rgba(58,46,38,0.4), 0 6px 16px -4px rgba(58,46,38,0.25);
+  --serif-display: 'Fraunces', serif;
+  --serif-body: 'Newsreader', serif;
+  --hand: 'Caveat', cursive;
+}
+
+*{ box-sizing: border-box; }
+html{ scroll-behavior: smooth; }
+body{
+  margin:0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--serif-body);
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* paper grain texture overlay, used across light sections */
+.grain{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+a{ color: inherit; }
+
+::selection{ background: var(--rust); color: var(--cream); }
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+/* ============================= INTRO / HERO HEADER ============================= */
+.hero-frame{
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 5vh 5vw 4vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title-tape{
+  position: relative;
+  margin: 6vh auto 1vh;
+  text-align: center;
+  z-index: 5;
+}
+.title-tape .eyebrow{
+  font-family: var(--hand);
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  color: var(--rust-deep);
+  letter-spacing: 0.04em;
+  display: block;
+  transform: rotate(-2deg);
+  margin-bottom: 0.2rem;
+}
+.title-tape h1{
+  font-family: var(--serif-display);
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: italic;
+  font-size: clamp(2.6rem, 7vw, 5.2rem);
+  line-height: 1.02;
+  margin: 0;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.title-tape .sub{
+  font-family: var(--serif-body);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  color: var(--ink-soft);
+  margin-top: 0.9rem;
+}
+
+.scroll-cue{
+  margin-top: auto;
+  font-family: var(--hand);
+  font-size: 1.15rem;
+  color: var(--ink-soft);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  opacity: 0.75;
+  animation: bob 2.6s ease-in-out infinite;
+}
+@keyframes bob{ 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(8px);} }
+.scroll-cue svg{ width: 16px; height: 22px; }
+
+/* ============================= POLAROID DESK ============================= */
+.desk{
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  height: clamp(420px, 70vh, 760px);
+  margin: 2vh auto 0;
+  z-index: 4;
+  --polaroid-w: 200px;
+}
+.desk-hint{
+  position: absolute;
+  bottom: -2.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--hand);
+  font-size: 1.05rem;
+  color: var(--ink-soft);
+  text-align: center;
+  width: 100%;
+  opacity: 0.8;
+}
+
+.polaroid{
+  position: absolute;
+  width: var(--polaroid-w, 200px);
+  background: #fffdf8;
+  padding: 14px 14px 18px;
+  border-radius: 2px;
+  box-shadow: var(--shadow-soft);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  transition: box-shadow 0.25s ease, transform 0.18s ease;
+  will-change: transform;
+}
+.polaroid:hover{
+  box-shadow: var(--shadow-deep);
+  z-index: 50;
+}
+.polaroid.dragging{
+  cursor: grabbing;
+  transition: none;
+  box-shadow: var(--shadow-deep);
+  z-index: 60;
+}
+.polaroid .tape{
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 56px;
+  height: 22px;
+  background: rgba(242,228,196,0.78);
+  border: 1px solid rgba(0,0,0,0.04);
+  transform: translateX(-50%) rotate(-3deg);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  pointer-events: none;
+}
+.polaroid .photo{
+  width: 100%;
+  aspect-ratio: 1/1;
+  border-radius: 1px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--paper), var(--paper-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.polaroid .photo img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.polaroid .photo.missing img{ display: none; }
+.polaroid .photo.missing::after{
+  content: "photo not found";
+  font-family: var(--hand);
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  opacity: 0.6;
+  text-align: center;
+  padding: 0 10px;
+}
+.polaroid .label{
+  font-family: var(--hand);
+  font-size: 1.15rem;
+  color: var(--ink-soft);
+  text-align: center;
+  margin-top: 10px;
+  display: block;
+}
+
+/* spotlight zone glow, subtle, center of desk */
+.desk::before{
+  content:"";
+  position: absolute;
+  top:50%; left:50%;
+  width: 260px; height: 260px;
+  transform: translate(-50%,-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(217,162,75,0.16), transparent 70%);
+  pointer-events: none;
+}
+
+/* ============================= FLIP OVERLAY ============================= */
+.flip-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(58,46,38,0.55);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 200;
+  perspective: 1800px;
+}
+.flip-overlay.active{
+  opacity: 1;
+  pointer-events: all;
+}
+.flip-card{
+  width: min(78vw, 380px);
+  aspect-ratio: 3/4;
+  position: relative;
+  transform: scale(0.7);
+  transition: transform 0.55s cubic-bezier(.2,.9,.25,1);
+}
+.flip-overlay.active .flip-card{ transform: scale(1); }
+.flip-card.flipped .flip-inner{ transform: rotateY(180deg); }
+.flip-inner{
+  position: relative;
+  width: 100%; height: 100%;
+  transition: transform 0.7s cubic-bezier(.4,.2,.2,1);
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+.flip-face{
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  backface-visibility: hidden;
+  box-shadow: var(--shadow-deep);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.flip-front{
+  background: #fffdf8;
+  padding: 22px 22px 28px;
+}
+.flip-front .photo-big{
+  flex: 1;
+  border-radius: 2px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--paper), var(--paper-dark));
+  display: flex; align-items: center; justify-content: center;
+}
+.flip-front .photo-big img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.flip-front .photo-big.missing img{ display: none; }
+.flip-front .photo-big.missing::after{
+  content: "photo not found";
+  font-family: var(--hand);
+  font-size: 1.1rem;
+  color: var(--ink-soft);
+  opacity: 0.6;
+}
+.flip-front .cap{
+  font-family: var(--hand);
+  font-size: 1.4rem;
+  text-align: center;
+  color: var(--ink-soft);
+  margin-top: 14px;
+}
+.flip-back{
+  background: var(--paper);
+  background-image: repeating-linear-gradient(
+    var(--paper) 0px, var(--paper) 31px, rgba(58,46,38,0.08) 32px
+  );
+  padding: 38px 30px;
+  justify-content: center;
+}
+.flip-back .quote{
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.3rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.flip-back .quote::before{ content: "“"; color: var(--rust); }
+.flip-back .quote::after{ content: "”"; color: var(--rust); }
+.flip-back .sign{
+  font-family: var(--hand);
+  font-size: 1.2rem;
+  color: var(--rust-deep);
+  margin-top: 1.2rem;
+  text-align: right;
+}
+.flip-tip{
+  font-family: var(--hand);
+  font-size: 1rem;
+  color: var(--cream);
+  text-align: center;
+  margin-top: 1.2rem;
+  opacity: 0.85;
+}
+.close-flip{
+  position: absolute;
+  top: -42px;
+  right: 0;
+  background: none;
+  border: none;
+  color: var(--cream);
+  font-family: var(--serif-body);
+  font-size: 1.6rem;
+  cursor: pointer;
+  line-height: 1;
+  opacity: 0.85;
+}
+.close-flip:hover{ opacity: 1; }
+
+/* ============================= CANDLE SECTION ============================= */
+.candle-section{
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8vh 6vw;
+  background: linear-gradient(180deg, #F6ECD9 0%, #EFD9B0 55%, #E3B97C 100%);
+  overflow: hidden;
+  transition: background 1.8s ease;
+}
+.candle-section.night{
+  background: linear-gradient(180deg, var(--night-mid) 0%, var(--night-deep) 100%);
+}
+
+.stars{
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.6s ease 0.3s;
+  pointer-events: none;
+}
+.candle-section.night .stars{ opacity: 1; }
+.star{
+  position: absolute;
+  width: 2px; height: 2px;
+  background: #fff;
+  border-radius: 50%;
+  animation: twinkle 3.4s ease-in-out infinite;
+}
+@keyframes twinkle{ 0%,100%{ opacity: 0.25; } 50%{ opacity: 1; } }
+
+.shooting-star{
+  position: absolute;
+  width: 2px; height: 2px;
+  background: linear-gradient(-45deg, #fff, transparent);
+  border-radius: 50%;
+  opacity: 0;
+}
+.candle-section.night .shooting-star{
+  animation: shoot 5.5s linear infinite;
+}
+@keyframes shoot{
+  0%{ opacity: 0; transform: translate(0,0); }
+  3%{ opacity: 1; }
+  18%{ opacity: 0; transform: translate(-220px, 140px); }
+  100%{ opacity: 0; }
+}
+
+.candle-heading{
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+  text-align: center;
+  color: var(--ink);
+  margin-bottom: 0.6rem;
+  transition: color 1.4s ease;
+  z-index: 3;
+}
+.candle-section.night .candle-heading{ color: var(--cream); }
+.candle-sub{
+  font-family: var(--serif-body);
+  font-style: italic;
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: 1.05rem;
+  margin-bottom: 4vh;
+  transition: color 1.4s ease;
+  z-index: 3;
+}
+.candle-section.night .candle-sub{ color: #C9C3DA; }
+
+.candle-wrap{
+  position: relative;
+  z-index: 3;
+  cursor: pointer;
+  padding: 30px 50px;
+}
+.candle-svg{ width: 70px; height: 190px; display: block; margin: 0 auto; }
+
+.flame{
+  transform-origin: 50% 100%;
+  animation: flicker 2.2s ease-in-out infinite;
+  transition: opacity 1s ease;
+}
+@keyframes flicker{
+  0%, 100%{ transform: scale(1,1) rotate(0deg); }
+  25%{ transform: scale(0.97,1.04) rotate(-1.5deg); }
+  50%{ transform: scale(1.03,0.97) rotate(1deg); }
+  75%{ transform: scale(0.99,1.02) rotate(-0.5deg); }
+}
+.flame.dimming{ animation: flicker-fast 0.18s ease-in-out infinite; }
+@keyframes flicker-fast{
+  0%,100%{ transform: scale(1,1) rotate(0deg); }
+  50%{ transform: scale(0.85,1.15) rotate(-4deg); }
+}
+.flame.out{ opacity: 0; }
+
+.smoke{
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.smoke.show{ opacity: 0.5; animation: smoke-rise 2.4s ease-out forwards; }
+@keyframes smoke-rise{
+  0%{ opacity: 0.5; transform: translateY(0) scaleX(1); }
+  100%{ opacity: 0; transform: translateY(-60px) scaleX(2.2); }
+}
+
+.progress-ring{
+  position: absolute;
+  top: -6px; left: 50%;
+  transform: translateX(-50%) rotate(-90deg);
+  width: 110px; height: 110px;
+  pointer-events: none;
+}
+.progress-ring circle{
+  fill: none;
+  stroke-width: 2;
+  stroke: var(--rust);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.progress-ring.active circle{ opacity: 0.55; }
+
+.blow-hint{
+  font-family: var(--hand);
+  font-size: 1.1rem;
+  color: var(--ink-soft);
+  margin-top: 2.2rem;
+  text-align: center;
+  z-index: 3;
+  transition: opacity 0.6s ease, color 1.4s ease;
+}
+.candle-section.night .blow-hint{ color: #C9C3DA; opacity: 0; }
+
+.wish-card{
+  position: relative;
+  z-index: 3;
+  margin-top: 3rem;
+  max-width: 480px;
+  background: rgba(242,233,220,0.06);
+  border: 1px solid rgba(217,162,75,0.35);
+  border-radius: 10px;
+  padding: 2.6rem 2.4rem;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 1.4s ease 0.4s, transform 1.4s ease 0.4s;
+  backdrop-filter: blur(3px);
+}
+.wish-card.show{ opacity: 1; transform: translateY(0); }
+.wish-card .wish-label{
+  font-family: var(--hand);
+  font-size: 1.2rem;
+  color: var(--gold);
+  margin-bottom: 0.8rem;
+}
+.wish-card p{
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: var(--cream);
+  margin: 0;
+}
+
+/* ============================= TIMELINE ============================= */
+.timeline-section{
+  position: relative;
+  background: var(--cream);
+  padding: 12vh 6vw 16vh;
+}
+.timeline-head{
+  text-align: center;
+  margin-bottom: 10vh;
+}
+.timeline-head .eyebrow{
+  font-family: var(--hand);
+  font-size: 1.25rem;
+  color: var(--rust-deep);
+}
+.timeline-head h2{
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  margin: 0.2rem 0 0;
+}
+
+.ribbon{
+  position: relative;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.ribbon::before{
+  content:"";
+  position: absolute;
+  top: 0; bottom: 0; left: 50%;
+  width: 2px;
+  background: repeating-linear-gradient(to bottom, var(--rust) 0 10px, transparent 10px 18px);
+  transform: translateX(-50%);
+  opacity: 0.55;
+}
+
+.t-item{
+  position: relative;
+  width: 50%;
+  padding: 0 50px 9vh;
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.8s cubic-bezier(.2,.7,.2,1), transform 0.8s cubic-bezier(.2,.7,.2,1);
+}
+.t-item.visible{ opacity: 1; transform: translateY(0); }
+.t-item:nth-child(odd){ left: 0; text-align: right; }
+.t-item:nth-child(even){ left: 50%; text-align: left; }
+
+.t-dot{
+  position: absolute;
+  top: 6px;
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  background: var(--rust);
+  box-shadow: 0 0 0 5px var(--cream), 0 0 0 6px rgba(177,75,44,0.3);
+}
+.t-item:nth-child(odd) .t-dot{ right: -7px; }
+.t-item:nth-child(even) .t-dot{ left: -7px; }
+
+.t-date{
+  font-family: var(--hand);
+  font-size: 1.15rem;
+  color: var(--rust-deep);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+.t-card{
+  background: #fffdf8;
+  border-radius: 4px;
+  padding: 1.4rem 1.6rem;
+  box-shadow: var(--shadow-soft);
+  display: inline-block;
+  max-width: 320px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.t-card:hover{ transform: translateY(-4px); box-shadow: var(--shadow-deep); }
+.t-card h3{
+  font-family: var(--serif-display);
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin: 0 0 0.4rem;
+  color: var(--ink);
+}
+.t-card p{
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 0;
+}
+.t-icon{
+  width: 30px; height: 30px;
+  margin-bottom: 0.6rem;
+  color: var(--rust);
+}
+.t-item:nth-child(odd) .t-icon{ margin-left: auto; }
+
+@media (max-width: 720px){
+  .ribbon::before{ left: 18px; }
+  .t-item, .t-item:nth-child(odd), .t-item:nth-child(even){
+    width: 100%; left: 0 !important; text-align: left; padding: 0 0 7vh 50px;
+  }
+  .t-item:nth-child(odd) .t-dot, .t-item:nth-child(even) .t-dot{ left: 11px; }
+  .t-item:nth-child(odd) .t-icon{ margin-left: 0; }
+}
+
+/* ===== RESPONSIVE TIERS ===== */
+
+/* Tablet / small laptop */
+@media (max-width: 900px){
+  .desk{ --polaroid-w: 170px; height: clamp(380px, 64vh, 640px); max-width: 640px; }
+  .desk::before{ width: 210px; height: 210px; }
+  .flip-card{ width: min(70vw, 340px); }
+}
+
+/* Phone */
+@media (max-width: 600px){
+  .hero-frame{ padding: 4vh 4.5vw 3vh; }
+  .title-tape{ margin: 4vh auto 1vh; }
+  .title-tape .sub{ padding: 0 2vw; }
+
+  .desk{ --polaroid-w: 130px; height: clamp(360px, 58vh, 560px); max-width: 460px; }
+  .desk::before{ width: 170px; height: 170px; }
+  .polaroid{ padding: 9px 9px 12px; }
+  .polaroid .tape{ width: 40px; height: 16px; top: -7px; }
+  .polaroid .label{ font-size: 0.95rem; margin-top: 7px; }
+  .desk-hint{ font-size: 0.9rem; bottom: -2.1rem; padding: 0 4vw; }
+
+  .flip-card{ width: min(82vw, 320px); }
+  .flip-front{ padding: 16px 16px 20px; }
+  .flip-back{ padding: 26px 20px; }
+  .flip-back .quote{ font-size: 1.1rem; }
+  .close-flip{ top: -38px; font-size: 1.3rem; }
+  .flip-tip{ font-size: 0.9rem; margin-top: 0.9rem; }
+
+  .candle-section{ padding: 6vh 6vw; min-height: 92vh; }
+  .candle-svg{ width: 56px; height: 152px; }
+  .progress-ring{ width: 88px; height: 88px; top: -4px; }
+  .wish-card{ padding: 2rem 1.6rem; margin-top: 2.2rem; }
+  .wish-card p{ font-size: 1.1rem; }
+
+  .timeline-section{ padding: 9vh 5vw 12vh; }
+  .timeline-head{ margin-bottom: 7vh; }
+  .t-card{ max-width: 100%; padding: 1.1rem 1.3rem; }
+  .t-item{ padding-bottom: 5.5vh; }
+}
+
+/* Very small phones */
+@media (max-width: 380px){
+  .desk{ --polaroid-w: 110px; height: clamp(320px, 56vh, 480px); }
+  .title-tape .eyebrow{ font-size: 1rem; }
+}
+
+/* Short / landscape viewports: hero shouldn't force a full extra scroll-screen */
+@media (max-height: 560px) and (orientation: landscape){
+  .hero-frame{ min-height: auto; padding: 4vh 5vw; }
+  .desk{ height: clamp(300px, 80vh, 420px); --polaroid-w: 120px; }
+  .scroll-cue{ display: none; }
+  .candle-section{ min-height: auto; padding: 6vh 6vw; }
+}
+
+/* Touch devices: dragging is the primary interaction, hover affordances are irrelevant */
+@media (hover: none){
+  .polaroid:hover{ box-shadow: var(--shadow-soft); }
+  .t-card:hover{ transform: none; box-shadow: var(--shadow-soft); }
+}
+
+/* ============================= CLOSING ============================= */
+.closing{
+  text-align: center;
+  padding: 10vh 6vw 12vh;
+  background: var(--cream);
+}
+.closing h2{
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  margin: 0 0 0.6rem;
+}
+.closing p{
+  font-family: var(--serif-body);
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 1.1rem;
+}
+.closing .heart{
+  display: inline-block;
+  margin-top: 1.2rem;
+  color: var(--rust);
+  width: 22px; height: 22px;
+  animation: pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse{ 0%,100%{ transform: scale(1);} 50%{ transform: scale(1.18);} }
+
+@media (max-width: 640px){
+  .closing{ padding: 8vh 6vw 9vh; }
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<!-- ============================= HERO + DESK ============================= -->
+<section class="hero-frame">
+  <div class="title-tape">
+    <span class="eyebrow">a small archive, kept just for you</span>
+    <h1>Happy Birthday</h1>
+    <p class="sub">Every photo below remembers something. Drag one to the middle of the desk to open it.</p>
+  </div>
+
+  <div class="desk" id="desk">
+    <!-- polaroids injected by JS -->
+  </div>
+  <div class="desk-hint">↳ drag a polaroid into the warm circle at the center</div>
+</section>
+
+<!-- ============================= FLIP OVERLAY ============================= -->
+<div class="flip-overlay" id="flipOverlay">
+  <div style="position:relative;">
+    <button class="close-flip" id="closeFlip" aria-label="Close">✕ close</button>
+    <div class="flip-card" id="flipCard">
+      <div class="flip-inner" id="flipInner">
+        <div class="flip-face flip-front" id="flipFront">
+          <div class="photo-big"></div>
+          <p class="cap"></p>
+        </div>
+        <div class="flip-face flip-back" id="flipBack">
+          <p class="quote"></p>
+          <p class="sign"></p>
+        </div>
+      </div>
+    </div>
+    <p class="flip-tip">tap the card to flip it over →</p>
+  </div>
+</div>
+
+<!-- ============================= CANDLE ============================= -->
+<section class="candle-section" id="candleSection">
+  <div class="stars" id="stars"></div>
+
+  <h2 class="candle-heading" id="candleHeading">Make a wish.</h2>
+  <p class="candle-sub" id="candleSub">Hold your gaze on the flame for a few quiet seconds.</p>
+
+  <div class="candle-wrap" id="candleWrap">
+    <svg class="progress-ring" id="progressRing" viewBox="0 0 110 110">
+      <circle cx="55" cy="55" r="50" stroke-dasharray="314" stroke-dashoffset="314" id="ringCircle"/>
+    </svg>
+    <svg class="candle-svg" viewBox="0 0 70 190">
+      <ellipse cx="35" cy="182" rx="26" ry="6" fill="#3A2E26" opacity="0.12"/>
+      <rect x="14" y="60" width="42" height="120" rx="4" fill="#F6ECD9"/>
+      <rect x="14" y="60" width="42" height="120" rx="4" fill="url(#waxgrad)" opacity="0.5"/>
+      <rect x="14" y="60" width="6" height="120" fill="#fff" opacity="0.3"/>
+      <path d="M33 60 Q35 48 32 40" stroke="#8B4226" stroke-width="2" fill="none" id="wick"/>
+      <g id="smoke" class="smoke">
+        <path d="M33 36 Q28 28 34 22 Q40 16 35 8" stroke="#8a8a8a" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      </g>
+      <g id="flame" class="flame">
+        <path d="M33 40 C20 28 24 12 33 0 C42 12 47 26 36 40 C35 41 34 41 33 40 Z" fill="#E3B97C"/>
+        <path d="M33 38 C25 29 27 18 33 9 C39 18 41 28 33 38 Z" fill="#D9A24B"/>
+        <path d="M33 34 C29 28 30 21 33 16 C36 21 37 28 33 34 Z" fill="#B14B2C"/>
+      </g>
+      <defs>
+        <linearGradient id="waxgrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#E3B97C"/>
+          <stop offset="1" stop-color="#F6ECD9"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+
+  <p class="blow-hint" id="blowHint">— gaze, and let it burn down slowly —</p>
+
+  <div class="wish-card" id="wishCard">
+    <div class="wish-label">your wish has been kept safe here</div>
+    <p>Whatever you wished for — may the next year of your life quietly go about making it true.</p>
+  </div>
+</section>
+
+<!-- ============================= TIMELINE ============================= -->
+<section class="timeline-section">
+  <div class="timeline-head">
+    <span class="eyebrow">not long, but not nothing</span>
+    <h2>How we got here</h2>
+  </div>
+
+  <div class="ribbon" id="ribbon">
+    <!-- timeline items injected by JS -->
+  </div>
+</section>
+
+<!-- ============================= CLOSING ============================= -->
+<section class="closing">
+  <h2>Here's to the next one.</h2>
+  <p>With more of everything good in it.</p>
+  <svg class="heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10.3-9.1C-0.5 8.4 1.3 4 5.4 4c2.2 0 3.8 1.2 4.6 2.6C10.8 5.2 12.4 4 14.6 4c4.1 0 5.9 4.4 3.7 7.9C19.5 16.4 12 21 12 21z"/></svg>
+</section>
+
+<script>
+/* ============================================================
+   DATA — swap photo SVGs / text / dates for the real story
+   ============================================================ */
+const polaroidData = [
+  { id:1, img:"photos/photo1.jpg", label:"stone wall, good light", caption:"that calm, knowing smile.",
+    quote:"Some people just carry their own light with them, wall or no wall.", sign:"— a good-hair, good-light day" },
+  { id:2, img:"photos/photo2.jpg", label:"chin in hand", caption:"caught mid-laugh, as always.",
+    quote:"That's the smile that makes everyone else start smiling too.", sign:"— just being yourself" },
+  { id:3, img:"photos/photo3.jpg", label:"thumbs up", caption:"approval rating: 100%.",
+    quote:"A thumbs up from you has always meant more than it should.", sign:"— stamp of approval" },
+  { id:4, img:"photos/photo4.jpg", label:"decorating the cake", caption:"small hands, big responsibility.",
+    quote:"Even back then, you took cake decorating very seriously.", sign:"— an old favourite, rescued from the album" },
+  { id:5, img:"photos/photo5.jpg", label:"the shopping cart era", caption:"main character, even at the till point.",
+    quote:"You were already commanding a room before you could reach the top shelf.", sign:"— Game store, a long time ago" }
+];
+
+
+const timelineData = [
+  { date:"Early this semester", title:"How it started", text:"Just two people who happened to cross paths — no big moment, no warning it would matter this much.", icon:"M12 21s-7-4.35-9-9a5 5 0 019-3 5 5 0 019 3c-2 4.65-9 9-9 9z" },
+  { date:"Soon after", title:"Turns out we just got along", text:"The kind of easy, no-effort conversation that tells you someone's worth keeping around.", icon:"M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" },
+  { date:"A few weeks in", title:"Not many memories yet", text:"We haven't had long. But the small, ordinary moments we have had already feel worth holding onto.", icon:"M12 8v5l3 3" },
+  { date:"Since then", title:"Quietly good company", text:"Some friendships don't need history to already feel steady. This is one of them.", icon:"M4 12h16M4 12l4-4M4 12l4 4" },
+  { date:"Today", title:"Here, on your day", text:"A small archive for a friendship that's still early — but already one I'm glad I have.", icon:"M12 21s-7-4.35-9-9a5 5 0 019-3 5 5 0 019 3c-2 4.65-9 9-9 9z" },
+  { date:"Looking ahead", title:"To the future", text:"Whatever comes next, I'm hoping there's a lot more of this — more good, easy, ordinary time together.", icon:"M5 12h14M13 6l6 6-6 6" }
+];
+
+/* ============================================================
+   POLAROID GALLERY — drag + drop-to-center flip reveal
+   ============================================================ */
+const desk = document.getElementById('desk');
+const flipOverlay = document.getElementById('flipOverlay');
+const flipCard = document.getElementById('flipCard');
+const flipInner = document.getElementById('flipInner');
+const flipFront = document.querySelector('#flipFront .photo-big');
+const flipFrontCap = document.querySelector('#flipFront .cap');
+const flipBackQuote = document.querySelector('#flipBack .quote');
+const flipBackSign = document.querySelector('#flipBack .sign');
+const closeFlipBtn = document.getElementById('closeFlip');
+
+// scattered starting layout (percent-based so it reflows reasonably)
+const startLayout = [
+  { x: 12, y: 8,  r: -7 },
+  { x: 58, y: 4,  r: 5  },
+  { x: 4,  y: 46, r: 4  },
+  { x: 70, y: 40, r: -5 },
+  { x: 34, y: 58, r: 8  },
+  { x: 50, y: 14, r: -3 }
+];
+
+function buildPolaroids(){
+  const deskRect = desk.getBoundingClientRect();
+  const polaroidW = parseFloat(getComputedStyle(desk).getPropertyValue('--polaroid-w')) || 200;
+  const polaroidH = polaroidW * 1.32; // approx rendered height incl. label + padding
+
+  polaroidData.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'polaroid';
+    el.dataset.id = item.id;
+
+    const pos = startLayout[i % startLayout.length];
+    const px = (pos.x/100) * Math.max(deskRect.width - polaroidW, 0);
+    const py = (pos.y/100) * Math.max(deskRect.height - polaroidH, 0);
+
+    el.style.left = px + 'px';
+    el.style.top = py + 'px';
+    el.style.transform = `rotate(${pos.r}deg)`;
+    el.dataset.rot = pos.r;
+
+    el.innerHTML = `
+      <div class="tape"></div>
+      <div class="photo"><img src="${item.img}" alt="${item.label}" onerror="this.closest('.photo').classList.add('missing')"></div>
+      <span class="label">${item.label}</span>
+    `;
+    desk.appendChild(el);
+    makeDraggable(el, item);
+  });
+}
+
+function makeDraggable(el, item){
+  let startX, startY, origLeft, origTop, dragging = false, moved = false;
+
+  function pointerDown(e){
+    e.preventDefault();
+    dragging = true; moved = false;
+    el.classList.add('dragging');
+    const p = pointFromEvent(e);
+    startX = p.x; startY = p.y;
+    origLeft = el.offsetLeft; origTop = el.offsetTop;
+    window.addEventListener('pointermove', pointerMove);
+    window.addEventListener('pointerup', pointerUp);
+  }
+
+  function pointerMove(e){
+    if(!dragging) return;
+    const p = pointFromEvent(e);
+    const dx = p.x - startX, dy = p.y - startY;
+    if(Math.abs(dx) > 4 || Math.abs(dy) > 4) moved = true;
+    el.style.left = (origLeft + dx) + 'px';
+    el.style.top = (origTop + dy) + 'px';
+  }
+
+  function pointerUp(e){
+    dragging = false;
+    el.classList.remove('dragging');
+    window.removeEventListener('pointermove', pointerMove);
+    window.removeEventListener('pointerup', pointerUp);
+
+    if(moved && isNearCenter(el)){
+      openFlip(item);
+    }
+  }
+
+  el.addEventListener('pointerdown', pointerDown);
+
+  // click without drag also opens (accessibility / simplicity)
+  el.addEventListener('click', () => {
+    if(!moved) openFlip(item);
+  });
+}
+
+function pointFromEvent(e){
+  return { x: e.clientX, y: e.clientY };
+}
+
+function isNearCenter(el){
+  const deskRect = desk.getBoundingClientRect();
+  const elRect = el.getBoundingClientRect();
+  const elCx = elRect.left + elRect.width/2;
+  const elCy = elRect.top + elRect.height/2;
+  const deskCx = deskRect.left + deskRect.width/2;
+  const deskCy = deskRect.top + deskRect.height/2;
+  const dist = Math.hypot(elCx - deskCx, elCy - deskCy);
+  // radius tracks the desk's smaller dimension so the drop zone matches
+  // the visible spotlight glow at every screen size
+  const radius = Math.max(110, Math.min(deskRect.width, deskRect.height) * 0.22);
+  return dist < radius;
+}
+
+function openFlip(item){
+  flipFront.innerHTML = `<img src="${item.img}" alt="${item.label}" onerror="this.parentElement.classList.add('missing')">`;
+  flipFrontCap.textContent = item.caption;
+  flipBackQuote.textContent = item.quote;
+  flipBackSign.textContent = item.sign;
+  flipInner.classList.remove('flipped');
+  flipOverlay.classList.add('active');
+}
+
+flipInner.addEventListener('click', () => {
+  flipInner.classList.toggle('flipped');
+});
+closeFlipBtn.addEventListener('click', () => {
+  flipOverlay.classList.remove('active');
+});
+flipOverlay.addEventListener('click', (e) => {
+  if(e.target === flipOverlay) flipOverlay.classList.remove('active');
+});
+
+buildPolaroids();
+
+/* ============================================================
+   CANDLE — 3 second hover triggers wish reveal
+   ============================================================ */
+const candleSection = document.getElementById('candleSection');
+const candleWrap = document.getElementById('candleWrap');
+const flame = document.getElementById('flame');
+const smoke = document.getElementById('smoke');
+const ringCircle = document.getElementById('ringCircle');
+const progressRing = document.getElementById('progressRing');
+const wishCard = document.getElementById('wishCard');
+const candleHeading = document.getElementById('candleHeading');
+const candleSub = document.getElementById('candleSub');
+const blowHint = document.getElementById('blowHint');
+const starsContainer = document.getElementById('stars');
+
+const HOLD_DURATION = 3000;
+let holdStart = null;
+let rafId = null;
+let blown = false;
+
+function buildStars(){
+  for(let i=0; i<90; i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random()*100 + '%';
+    s.style.top = Math.random()*85 + '%';
+    s.style.animationDelay = (Math.random()*3) + 's';
+    const size = Math.random() < 0.15 ? 3 : 1.6;
+    s.style.width = size+'px';
+    s.style.height = size+'px';
+    starsContainer.appendChild(s);
+  }
+  for(let i=0; i<3; i++){
+    const sh = document.createElement('div');
+    sh.className = 'shooting-star';
+    sh.style.left = (40 + Math.random()*40) + '%';
+    sh.style.top = (10 + Math.random()*20) + '%';
+    sh.style.animationDelay = (i*4 + Math.random()*3) + 's';
+    starsContainer.appendChild(sh);
+  }
+}
+buildStars();
+
+const CIRC = 314; // 2*pi*r, r=50
+
+function startHold(){
+  if(blown) return;
+  holdStart = performance.now();
+  progressRing.classList.add('active');
+  flame.classList.add('dimming');
+  tick();
+}
+
+function tick(){
+  if(holdStart === null) return;
+  const elapsed = performance.now() - holdStart;
+  const pct = Math.min(elapsed / HOLD_DURATION, 1);
+  ringCircle.setAttribute('stroke-dashoffset', CIRC * (1 - pct));
+
+  if(pct >= 1){
+    completeBlow();
+    return;
+  }
+  rafId = requestAnimationFrame(tick);
+}
+
+function cancelHold(){
+  holdStart = null;
+  if(rafId) cancelAnimationFrame(rafId);
+  if(!blown){
+    progressRing.classList.remove('active');
+    flame.classList.remove('dimming');
+    ringCircle.setAttribute('stroke-dashoffset', CIRC);
+  }
+}
+
+function completeBlow(){
+  blown = true;
+  if(rafId) cancelAnimationFrame(rafId);
+  flame.classList.remove('dimming');
+  flame.classList.add('out');
+  smoke.classList.add('show');
+  progressRing.classList.remove('active');
+
+  candleHeading.textContent = 'Wish made.';
+  candleSub.textContent = 'Some things are better kept than said aloud.';
+  blowHint.style.opacity = '0';
+
+  setTimeout(() => {
+    candleSection.classList.add('night');
+  }, 350);
+
+  setTimeout(() => {
+    wishCard.classList.add('show');
+  }, 2000);
+}
+
+candleWrap.addEventListener('pointerenter', startHold);
+candleWrap.addEventListener('pointerleave', cancelHold);
+candleWrap.addEventListener('pointerdown', (e) => e.preventDefault());
+
+/* ============================================================
+   TIMELINE — build + scroll reveal
+   ============================================================ */
+const ribbon = document.getElementById('ribbon');
+
+function buildTimeline(){
+  timelineData.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 't-item';
+    el.innerHTML = `
+      <div class="t-dot"></div>
+      <svg class="t-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="${item.icon}"/>
+      </svg>
+      <span class="t-date">${item.date}</span>
+      <div class="t-card">
+        <h3>${item.title}</h3>
+        <p>${item.text}</p>
+      </div>
+    `;
+    ribbon.appendChild(el);
+  });
+}
+buildTimeline();
+
+const tItems = document.querySelectorAll('.t-item');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.2 });
+tItems.forEach(el => observer.observe(el));
+
+/* keep desk polaroids inside bounds on resize / orientation change (simple clamp) */
+function clampPolaroidsToDesk(){
+  const deskRect = desk.getBoundingClientRect();
+  document.querySelectorAll('.polaroid').forEach(el => {
+    const maxLeft = deskRect.width - el.offsetWidth;
+    const maxTop = deskRect.height - el.offsetHeight;
+    el.style.left = Math.min(parseFloat(el.style.left), Math.max(maxLeft,0)) + 'px';
+    el.style.top = Math.min(parseFloat(el.style.top), Math.max(maxTop,0)) + 'px';
+  });
+}
+window.addEventListener('resize', clampPolaroidsToDesk);
+window.addEventListener('orientationchange', () => setTimeout(clampPolaroidsToDesk, 200));
+</script>
+</body>
+</html>
